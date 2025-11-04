@@ -1,0 +1,33 @@
+[
+  {
+    "name": "solo_adult",
+     "walkers": [{ "type": "man"}],
+    "message": "...Hello?"
+  },
+  {
+    "name": "couple",
+     "walkers": [
+      { "type": "man" },
+      { "type": "woman" }
+    ],
+    "message": "...Fancy a walk? "
+  },
+  {
+    "name": "family",
+     "walkers": [
+      { "type": "man" },
+      { "type": "woman"},
+      { "type": "child" }
+    ],
+    "message": "...Or a run with a little one! "
+  },
+  {
+    "name": "aging",
+     "walkers": [
+      { "type": "elderly" },
+      { "type": "elderly" },
+      { "type": "man" }
+    ],
+    "message": "...What a great time we've had"
+  }
+]

@@ -1,0 +1,412 @@
+{
+  "quiz": {
+    "title": "Which Disney Princess Are You?",
+    "description": "Answer these questions to discover which Disney princess matches your personality!",
+    "princesses": [
+      {
+        "id": "ariel",
+        "name": "Ariel",
+        "title": "The Little Mermaid",
+        "description": "You're adventurous, curious, and always dreaming of exploring new worlds.\nYou follow your heart fearlessly and aren't afraid to take risks for what you believe in.\nYour curiosity and free spirit inspire everyone around you.",
+        "traits": ["adventurous", "curious", "passionate", "rebellious", "optimistic", "determined"]
+      },
+      {
+        "id": "belle",
+        "name": "Belle",
+        "title": "Beauty and the Beast",
+        "description": "You're intelligent, independent, and see beauty beyond appearances.\nYou love learning and value inner character over superficial qualities.\nYour kindness and open mind help you understand others deeply.",
+        "traits": ["intelligent", "bookish", "compassionate", "independent", "brave", "accepting"]
+      },
+      {
+        "id": "mulan",
+        "name": "Mulan",
+        "title": "Mulan",
+        "description": "You're courageous, loyal, and willing to make sacrifices for those you love.\nYou challenge expectations and prove that determination matters more than following tradition.\nYour strength comes from your heart and your commitment to doing what's right.",
+        "traits": ["brave", "loyal", "determined", "selfless", "strategic", "honorable"]
+      },
+      {
+        "id": "rapunzel",
+        "name": "Rapunzel",
+        "title": "Tangled",
+        "description": "You're creative, optimistic, and find joy in every new experience.\nYour enthusiasm is contagious and you approach life with wonder and excitement.\nYou're resilient and see opportunities where others see obstacles.",
+        "traits": ["creative", "optimistic", "enthusiastic", "artistic", "resilient", "trusting"]
+      },
+      {
+        "id": "tiana",
+        "name": "Tiana",
+        "title": "The Princess and the Frog",
+        "description": "You're hardworking, ambitious, and dedicated to achieving your dreams through perseverance.\nYou value family, tradition, and the satisfaction of earning what you have.\nYour determination and work ethic inspire everyone around you.",
+        "traits": ["hardworking", "ambitious", "practical", "dedicated", "family-oriented", "skilled"]
+      },
+      {
+        "id": "moana",
+        "name": "Moana",
+        "title": "Moana",
+        "description": "You're a natural leader with a deep connection to your roots and community.\nYou're brave enough to forge your own path while honoring where you come from.\nYour determination to help others drives you to overcome any challenge.",
+        "traits": ["leadership", "brave", "compassionate", "adventurous", "community-minded", "determined"]
+      }
+    ],
+    "questions": [
+      {
+        "id": 1,
+        "question": "How do you spend your ideal weekend?",
+        "answers": [
+          {
+            "text": "Exploring somewhere I've never been before",
+            "princess": "ariel"
+          },
+          {
+            "text": "Curled up with a great book",
+            "princess": "belle"
+          },
+          {
+            "text": "Training or working on physical activities",
+            "princess": "mulan"
+          },
+          {
+            "text": "Creating art or trying a new craft",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "Working on a personal project or goal",
+            "princess": "tiana"
+          },
+          {
+            "text": "Spending time with family and friends",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "question": "What quality do you value most in others?",
+        "answers": [
+          {
+            "text": "Sense of adventure and spontaneity",
+            "princess": "ariel"
+          },
+          {
+            "text": "Intelligence and depth of character",
+            "princess": "belle"
+          },
+          {
+            "text": "Loyalty and honor",
+            "princess": "mulan"
+          },
+          {
+            "text": "Creativity and optimism",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "Work ethic and ambition",
+            "princess": "tiana"
+          },
+          {
+            "text": "Compassion and sense of responsibility",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "question": "When faced with a challenge, you typically:",
+        "answers": [
+          {
+            "text": "Dive in headfirst without overthinking",
+            "princess": "ariel"
+          },
+          {
+            "text": "Research and think it through carefully",
+            "princess": "belle"
+          },
+          {
+            "text": "Create a strategic plan and execute it",
+            "princess": "mulan"
+          },
+          {
+            "text": "Stay positive and find creative solutions",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "Roll up your sleeves and work until it's done",
+            "princess": "tiana"
+          },
+          {
+            "text": "Consider how it affects others and lead the way",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "question": "What's your biggest dream?",
+        "answers": [
+          {
+            "text": "To explore and experience everything life has to offer",
+            "princess": "ariel"
+          },
+          {
+            "text": "To learn, grow, and find true connection",
+            "princess": "belle"
+          },
+          {
+            "text": "To make my family proud and protect those I love",
+            "princess": "mulan"
+          },
+          {
+            "text": "To see the world and create beautiful things",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "To build something lasting through hard work",
+            "princess": "tiana"
+          },
+          {
+            "text": "To help my community and make a real difference",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "question": "People would describe you as:",
+        "answers": [
+          {
+            "text": "Free-spirited and passionate",
+            "princess": "ariel"
+          },
+          {
+            "text": "Thoughtful and kind",
+            "princess": "belle"
+          },
+          {
+            "text": "Strong and reliable",
+            "princess": "mulan"
+          },
+          {
+            "text": "Cheerful and imaginative",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "Focused and determined",
+            "princess": "tiana"
+          },
+          {
+            "text": "Inspiring and courageous",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "question": "What type of environment makes you happiest?",
+        "answers": [
+          {
+            "text": "Somewhere vast and full of mysteries to discover",
+            "princess": "ariel"
+          },
+          {
+            "text": "A quiet, cozy space with room to think",
+            "princess": "belle"
+          },
+          {
+            "text": "An active environment where I can test my limits",
+            "princess": "mulan"
+          },
+          {
+            "text": "A bright, inspiring space that sparks creativity",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "A busy place where I can work toward my goals",
+            "princess": "tiana"
+          },
+          {
+            "text": "Surrounded by nature and community",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "question": "How do you handle rules and expectations?",
+        "answers": [
+          {
+            "text": "I follow my heart, even if it means breaking rules",
+            "princess": "ariel"
+          },
+          {
+            "text": "I question them and think for myself",
+            "princess": "belle"
+          },
+          {
+            "text": "I respect them but will challenge them when necessary",
+            "princess": "mulan"
+          },
+          {
+            "text": "I'm optimistic about finding my own path",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "I work within them to achieve my dreams",
+            "princess": "tiana"
+          },
+          {
+            "text": "I honor tradition while forging new ways forward",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "question": "What motivates you most?",
+        "answers": [
+          {
+            "text": "The thrill of new experiences",
+            "princess": "ariel"
+          },
+          {
+            "text": "Knowledge and understanding",
+            "princess": "belle"
+          },
+          {
+            "text": "Protecting and honoring my loved ones",
+            "princess": "mulan"
+          },
+          {
+            "text": "Joy and self-expression",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "Achieving my goals through dedication",
+            "princess": "tiana"
+          },
+          {
+            "text": "Serving a greater purpose",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "question": "Your approach to friendship is:",
+        "answers": [
+          {
+            "text": "Fun and spontaneous adventures together",
+            "princess": "ariel"
+          },
+          {
+            "text": "Deep conversations and mutual understanding",
+            "princess": "belle"
+          },
+          {
+            "text": "Unwavering loyalty and support",
+            "princess": "mulan"
+          },
+          {
+            "text": "Sharing joy and creative projects",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "Supporting each other's dreams and growth",
+            "princess": "tiana"
+          },
+          {
+            "text": "Building strong bonds and helping each other",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "question": "What's your greatest strength?",
+        "answers": [
+          {
+            "text": "My courage to follow my dreams",
+            "princess": "ariel"
+          },
+          {
+            "text": "My ability to see the good in everyone",
+            "princess": "belle"
+          },
+          {
+            "text": "My determination and bravery",
+            "princess": "mulan"
+          },
+          {
+            "text": "My positive outlook and creativity",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "My work ethic and perseverance",
+            "princess": "tiana"
+          },
+          {
+            "text": "My leadership and sense of purpose",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "question": "How do you deal with setbacks?",
+        "answers": [
+          {
+            "text": "I stay optimistic and find another way",
+            "princess": "ariel"
+          },
+          {
+            "text": "I reflect and learn from the experience",
+            "princess": "belle"
+          },
+          {
+            "text": "I get back up and fight harder",
+            "princess": "mulan"
+          },
+          {
+            "text": "I find the silver lining and keep going",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "I work twice as hard to overcome them",
+            "princess": "tiana"
+          },
+          {
+            "text": "I remember my purpose and push forward",
+            "princess": "moana"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "question": "What would your perfect day include?",
+        "answers": [
+          {
+            "text": "An exciting adventure in uncharted territory",
+            "princess": "ariel"
+          },
+          {
+            "text": "Discovering something new through reading or conversation",
+            "princess": "belle"
+          },
+          {
+            "text": "Accomplishing something that helps my family",
+            "princess": "mulan"
+          },
+          {
+            "text": "Creating something beautiful and sharing it",
+            "princess": "rapunzel"
+          },
+          {
+            "text": "Making significant progress on my goals",
+            "princess": "tiana"
+          },
+          {
+            "text": "Leading others and making a positive impact",
+            "princess": "moana"
+          }
+        ]
+      }
+    ]
+  }
+}
