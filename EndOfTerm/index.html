@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sketch</title>
+    <title>Farm.exe has stopped working</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -13,6 +13,93 @@
   </head>
 
   <body>
-    <script src="sketch.js"></script>
+    <!-- Loading Screen - Themed Introduction -->
+    <div id="loadingScreen" class="loading-overlay">
+      <div class="loading-container">
+        <div class="loading-header">
+          <p class="system-title">Loading Farm.exe</p>
+        </div>
+        <div class="loading-content">
+          <div class="boot-text">
+            <p class="boot-line">Searching for farmwashing<span class="loading-dots">...</span></p>
+            <p class="boot-line delay-1">Researching marketing claims</p>
+            <p class="boot-line delay-1">Detecting false advertising patterns<span class="loading-dots">...</span></p>
+            <p class="boot-line delay-2">Fake farm imagery detected <span class="status-warn">[WARNING]</span></p>
+            <p class="boot-line delay-2">Found products falsely using "farm-fresh" terminology <span class="status-warn">[WARNING]</span></p>
+            <p class="boot-line delay-3">Actual farm origin verified overseas <span class="status-warn">[WARNING]</span></p>
+            <p class="boot-line delay-3">"Family farm" brand does not exist. Under corporate ownership <span class="status-critical">[DECEPTION]</span></p>
+          </div>
+          <div class="loading-bar-container">
+            <div class="loading-bar">
+              <div class="loading-bar-fill"></div>
+            </div>
+            <p class="loading-subtext">Preparing package inspection...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows "Not Responding" Dialog -->
+    <div id="windowsDialog" class="dialog-overlay">
+      <div class="dialog-window">
+        <div class="dialog-titlebar">
+          <span class="dialog-icon">⚠️</span>
+          <div class="dialog-title">
+            <span>Farm.exe has stopped working</span>
+            <span class="dialog-subtitle">Package contents not found...</span>
+
+          </div>
+        </div>
+        <div class="dialog-content">
+          <div class="dialog-message">
+            <div class="windows-icon">⌛</div>
+            <div class="message-text">
+              <p class="progress-text">This packaging promised farm fresh beef. <br>But a farmer was not found.</p>
+              
+            </div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          <p><strong>Searching for a farmer...</strong></p>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      // Check BEFORE loading any sketch if we should load sketch-2
+      const shouldLoadSketch2 = sessionStorage.getItem('loadSketch2') === 'true';
+      
+      if (shouldLoadSketch2) {
+        // Hide loading screen immediately for sketch-2
+        document.getElementById('loadingScreen').style.display = 'none';
+        sessionStorage.removeItem('loadSketch2');
+        
+        // Load sketch-2.js
+        const newScript = document.createElement('script');
+        newScript.src = 'sketch-2.js';
+        document.body.appendChild(newScript);
+      } else {
+        // Load sketch.js for first time visitors
+        const sketch1 = document.createElement('script');
+        sketch1.src = 'sketch.js';
+        document.body.appendChild(sketch1);
+      }
+      
+      // Function to trigger sketch swap - called from sketch.js
+      function triggerSketchSwap() {
+        console.log('Triggering sketch swap after timeout');
+        
+        // Hide the dialog first
+        document.getElementById('windowsDialog').classList.remove('visible');
+        
+        // Reload the entire page but with sketch-2 instead
+        // Store a flag in sessionStorage to know we want sketch-2
+        sessionStorage.setItem('loadSketch2', 'true');
+        location.reload();
+      }
+    </script>
   </body>
 </html>

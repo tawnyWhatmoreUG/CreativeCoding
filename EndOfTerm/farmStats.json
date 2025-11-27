@@ -1,0 +1,119 @@
+{
+  "agricultural_system_errors": [
+    {
+      "error_code": "0x00043000",
+      "error_name": "ECONOMIC_VIABILITY_CRITICAL_FAILURE",
+      "message": "*** FATAL: MAJORITY FARM OPERATIONS NON-VIABLE ***\n\nViable farm operations: 43% (37,810 farms)\nVulnerable operations: 24% (21,103 farms)\nSustainable only via off-farm employment: 33%\n\nCRITICAL: 57% of farm businesses cannot remunerate\nfamily labour at minimum wage (€22,860) AND provide\n5% return on non-land assets\n\nDrystock sector collapse imminent:\n- Cattle Rearing viability: 27% (vulnerable: 27%)\n- Cattle Other viability: 31% (vulnerable: 27%)\n- Sheep viability: 41% (vulnerable: 31%)\n\nFARM_BUSINESS_MODEL.exe has encountered a fatal error\nand needs to close"
+    },
+    {
+      "error_code": "0x129FFI",
+      "error_name": "SUBSIDY_DEPENDENCY_OVERFLOW",
+      "message": "EXCEPTION: DIRECT_PAYMENTS > FARM_INCOME\n\nCattle Rearing: Direct payments = 129% of FFI\nSheep: Direct payments = 102% of FFI\nCattle Other: Direct payments = 87% of FFI\nTillage: Direct payments = 84% of FFI\n\nWARNING: Market income NEGATIVE before subsidies\nCattle Rearing average market loss: €3,955\nSheep farms operating at market loss\n\nSystem is running on life support (CAP payments)\nAny interruption to subsidy stream will cause\nimmediate and catastrophic sector failure\n\nECONOMIC_INDEPENDENCE.dll not found"
+    },
+    {
+      "error_code": "0x52PERC",
+      "error_name": "INCOME_DISTRIBUTION_FRAGMENTATION",
+      "message": "KERNEL PANIC: Severe wealth concentration detected\n\nDairy farms: 17% of population → 52% of income (€1.64bn)\nCattle farms: 58% of population → 27% of income (€860m)\n\nIncome distribution failure:\n- 53% of farms earn <€20,000 annually\n- 75% of Dairy farms earn >€50,000\n- 51% of Cattle Rearing farms earn <€10,000\n\nGini coefficient approaching critical threshold\nMajority of sector experiencing functional poverty\nwhile minority thrives\n\nRESOURCE_ALLOCATION.sys is critically unbalanced\nTwo-tier system partition detected"
+    },
+    {
+      "error_code": "0x61EMPL",
+      "error_name": "OFF_FARM_EMPLOYMENT_DEPENDENCY",
+      "message": "PRIMARY OCCUPATION THREAD CONFLICT DETECTED\n\nFarm households requiring off-farm income: 61%\nFarm operators working off-farm: 43%\n\nDrystock operator off-farm employment:\n- Cattle Rearing operators: 47%\n- Cattle Other operators: 55%\n- Sheep operators: 45%\n\nWARNING: Farming has become secondary income source\nfor majority of operations\n\nFULL_TIME_FARMING.exe is not responding\nSystem resources divided between competing processes\nFarm maintenance scheduled during off-hours only"
+    },
+    {
+      "error_code": "0x59YEARS",
+      "error_name": "GENERATIONAL_SUCCESSION_TIMEOUT",
+      "message": "CRITICAL: Operator age exceeds sustainable threshold\n\nAverage operator age: 59 years\nYoung holders (<35 years): 4.3% (5,791)\nElderly holders (>65 years): 37.8% (50,392)\nAge dependency ratio: 8.7:1 (elderly to young)\nHouseholds receiving pension income: 35%\nCattle Rearing households on pension: 46%\nSheep/Cattle Other households on pension: 37-38%\n\nSUCCESSION_PLANNING.exe not found\nReplacement rate critically insufficient\n9 times more farmers retiring than entering\nRetirement rate exceeding replacement rate\n\nSystem attempting to operate with deprecated\noperator base. Knowledge transfer protocols failing.\nIntergenerational skill sets will be lost permanently\n\nFarm_Continuity.dll has stopped responding\nForced shutdown in <15 years"
+    },
+    {
+      "error_code": "0x115VOL",
+      "error_name": "EXTREME_INCOME_VOLATILITY_ERROR",
+      "message": "*** SYSTEM INSTABILITY: Price shock cascade ***\n\n2024 year-on-year FFI changes:\n- Cattle Rearing: +97%\n- Sheep: +111%\n- Tillage: +115%\n- Dairy: +113%\n- Cattle Other: +32%\n\n2023 income levels: CRITICALLY LOW across all systems\n2024 income levels: RECOVERED but unsustainable\n\nPredictability.dll corrupted\nLong-term planning impossible with ±100% annual swings\nWeather volatility + Price volatility = System chaos\n\nINVESTMENT_CONFIDENCE.exe cannot execute\nRisk management protocols overwhelmed"
+    },
+    {
+      "error_code": "0x70DEBT",
+      "error_name": "DAIRY_DEBT_CONCENTRATION_WARNING",
+      "message": "High-risk debt accumulation in profitable sector\n\nDairy farms with debt: 70%\nAverage debt (indebted farms): €147,487\nDebt-to-income ratio: 1.28\n\nTotal Dairy sector debt exposure: HIGH\n52% of total farm income dependent on 70% leveraged\noperations\n\nSingle sector failure could trigger cascade:\nDairy collapse → 52% of farm income eliminated\n→ Rural economy systemic failure\n\nFINANCIAL_RESILIENCE buffer critically low\nNo redundancy in income generation system"
+    },
+    {
+      "error_code": "0x78RENT",
+      "error_name": "LAND_ACCESS_BARRIER_ESCALATION",
+      "message": "RESOURCE ACCESS DENIED: Land rental costs prohibitive\n\n78% of Dairy farmers renting land\nAverage rental cost: €568/hectare (2024)\nRental cost inflation: ONGOING\n\nBarriers to entry: MAXIMUM\nBarriers to expansion: HIGH\nNew entrant land access: BLOCKED\n\nCompetition for finite resource creating:\n- Generational lock-out\n- Scale inequality\n- Capital requirement inflation\n\nLAND_MARKET.sys experiencing monopolistic pressure\nAccess.exe requires €40,000+ capital for 70ha operation"
+    },
+    {
+      "error_code": "0x17500W",
+      "error_name": "REGIONAL_DISPARITY_CRITICAL",
+      "message": "Geographic income inequality at critical levels\n\nAverage FFI by region:\n- West: €17,500 (subsidy dependence: 107% of FFI)\n- South-East: €57,500 (subsidy dependence: 39% of FFI)\n\nIncome ratio: 3.3:1 (SE:West)\n\nWest region characteristics:\n- Higher concentration of drystock\n- Smaller farm sizes\n- Lower soil quality\n- Structural disadvantage\n\nREGIONAL_BALANCE.dll corrupted\nWestern agricultural economy on life support\nMigration patterns: Accelerating eastward\n\nSPATIAL_EQUITY protocols failing"
+    },
+    {
+      "error_code": "0x18PERC",
+      "error_name": "STRUCTURAL_POVERTY_PERSISTENCE",
+      "message": "LOW_INCOME_THRESHOLD exceeded by majority\n\nFarms earning <€5,000: 18%\nFarms earning €5,000-€10,000: 15%\nFarms earning €10,000-€20,000: 20%\n\nTotal farms <€20,000: 53% (46,603 farms)\n\nDrystock breakdown:\n- 51% Cattle Rearing <€10,000\n- 43% Cattle Other <€10,000\n- 19% Sheep <€10,000\n\nPOVERTY_TRAP.exe running continuously\nIncome insufficient for reinvestment\nModernization impossible without external capital\n\nECONOMIC_MOBILITY.sys locked\nStructural poverty becoming hereditary"
+    },
+    {
+      "error_code": "0x34.7HA",
+      "error_name": "ECONOMIC_SCALE_INADEQUACY",
+      "message": "The required operational scale for competitive output\nis not being met by current structural parameters\n\nAVERAGE_FARM_SIZE = 34.7 ha (CSO 2023)\nNFS represented average = 45 ha (Teagasc 2024)\n\nFailure Reason: Mean farm size threatens long-term\nviability for average unit\n\nRun consolidation algorithm (Consolidate.exe)\nSmall farm units are being rendered economically\nvulnerable\n\nSCALE_EFFICIENCY.dll experiencing critical errors"
+    },
+    {
+      "error_code": "0x13.2F",
+      "error_name": "GENDER_DIVERSITY_WARNING",
+      "message": "Non-critical but persistent error detected:\n\nFemale farm holders: 13.2% (17,519)\nMale farm holders: 86.8% (115,655)\n\nSystem lacks redundancy through diversity\nSingle-path dependency detected in agricultural operations\n\nThis imbalance may contribute to succession failure\nCombined with youth deficit, system resilience compromised"
+    },
+    {
+      "error_code": "0x004168",
+      "error_name": "ENVIRONMENTAL_UPGRADE_TIMEOUT",
+      "message": "System failed to integrate necessary sustainability patches\nEnvironment-viability conflict detected\n\nORGANIC_FARM_COUNT = 4,168 (3.1% of 133,174 total farms)\n\nFailure Reason: Transition to climate-resilient farming\nmodels is critically insufficient\n\nInitiate forced system-wide shift to sustainable practice\nContinued high dependency on conventional models is\nprojected to cause long-term environmental kernel panic\n\nSUSTAINABILITY.sys update required"
+    },
+    {
+      "error_code": "0x299725",
+      "error_name": "LABOR_FORCE_DEPRECATION",
+      "message": "IRQL_NOT_LESS_OR_EQUAL_TO_REPLACEMENT_RATE\n\nAgricultural Labour Force: 299,725 persons\nNew entrants: Critically insufficient\nExit rate: Accelerating\n\nThe aging operator base (Thread_ID: >65_years)\nis attempting to access resources (farms) that\nno successor threads have been initialized for\n\nSystem will experience forced shutdown in 1 generation"
+    },
+    {
+      "error_code": "0x47000F",
+      "error_name": "SMALL_FARM_EXCLUSION_ERROR",
+      "message": "WARNING: 47,000 farms excluded from annual survey\n\nFarms <€8,000 standard output: 47,000 units\nExcluded from annual NFS analysis\nViability status (2022 survey): 40% vulnerable\n\nActual vulnerable farm population:\n= 21,103 (NFS) + ~18,800 (small farms)\n≈ 39,900 total vulnerable farms (30% of ALL farms)\n\nTrue scale of crisis UNDERESTIMATED in primary data\n\nSMALL_FARM_SECTOR.dat not loaded\nFull system diagnostics incomplete\n80,000+ farm population missing from annual analysis"
+    },
+    {
+      "error_code": "0x88000P",
+      "error_name": "POPULATION_REPRESENTATION_MISMATCH",
+      "message": "Survey coverage vs population reality:\n\nNFS represents: 87,931 farms (65% of total)\nTotal Irish farms (2020 Census): 135,000+\nTotal Irish farms (2023 CSO): 133,174\nExcluded small farms: ~47,000\n\nMajority sector (Cattle: 58% of NFS farms)\ngenerates minority income (27% of total)\n\nREPRESENTATIVENESS.dll questionable\nAggregate statistics mask severity of crisis\nat population base\n\nDATA_COVERAGE incomplete\nPolicy decisions based on partial system scan"
+    }
+  ],
+  "metadata": {
+    "data_sources": [
+      "Teagasc National Farm Survey 2024",
+      "CSO Ireland Farm Structure Survey 2023"
+    ],
+    "report_dates": ["06-10-2025", "17-12-2024"],
+    "nfs_survey_sample": 863,
+    "nfs_represented_farms": 87931,
+    "cso_total_farms": 133174,
+    "excluded_small_farms": 47000,
+    "total_agricultural_area_ha": 4620096,
+    "average_farm_size_ha_cso": 34.7,
+    "average_farm_size_ha_nfs": 45,
+    "average_operator_age": 59,
+    "young_holders_percentage": 4.3,
+    "elderly_holders_percentage": 37.8,
+    "male_holders_percentage": 86.8,
+    "female_holders_percentage": 13.2,
+    "viable_farms_percentage": 43,
+    "vulnerable_farms_percentage": 24,
+    "sustainable_farms_percentage": 33,
+    "off_farm_employment_households": 61,
+    "agricultural_labour_force": 299725,
+    "organic_farm_count": 4168,
+    "subsidy_dependent_systems": ["Cattle Rearing", "Sheep", "Cattle Other", "Tillage"],
+    "dairy_income_concentration": "52% of total from 17% of farms",
+    "system_status": "CRITICAL - Multiple cascading failures detected"
+  },
+  "system_prognosis": {
+    "immediate_risk": "EXTREME - 24% of farms vulnerable to collapse without intervention",
+    "medium_term_risk": "SEVERE - Aging operators (59 avg, 37.8% >65) with catastrophic succession deficit (8.7:1 elderly to young ratio)",
+    "long_term_viability": "CATASTROPHIC - Current model unsustainable for 57% of farms",
+    "recommended_action": "IMMEDIATE_SYSTEM_REDESIGN_REQUIRED",
+    "time_to_critical_failure": "10-15 years without structural reform"
+  }
+}
