@@ -1,37 +1,67 @@
-let containerBase;
-let containerLid;
-let containerTexture;
+// ============================================================================
+// FOOD CONTAINER 3D VISUALIZATION - sketch.js
+// ============================================================================
+// This sketch renders a 3D food container (base + lid) that the user can
+// interact with. The container serves as a metaphor for food security in
+// Ireland - when opened, it reveals emptiness, triggering a "Windows error"
+// dialog (rendered with HTML) before transitioning to sketch-2.js (BSOD agricultural statistics).
+// ============================================================================
 
-// Loading state variables
-let loadingComplete = false;
-let loadingStartTime;
-let minLoadingTime = 4000; // Minimum time to show loading screen. this looks better than the default p5js loading, gives the viewer some context of project while waiting for models to load 
+// ====== 3D MODEL AND TEXTURE ASSETS ======
+let containerBase;      // 3D model for the bottom part of the food container
+let containerLid;       // 3D model for the lid/top of the container
+let containerTexture;   // Texture map image applied to both models 
 
-// Hover state for lid
-let isHoveringLid = false;
+// ====== LOADING STATE VARIABLES ======
+let loadingComplete = false;  // Flag to track when all assets are loaded
+let loadingStartTime;         // Timestamp when loading began (for calculating elapsed time)
+let minLoadingTime = 4000;    // 4000ms = 4 seconds minimum loading screen display. This ensures the loading message is readable and provides context about the project before the 3D scene appears
 
-// Lid rotation state
-let lidRotation = 0; // Current rotation angle
-let targetLidRotation = 0; // Target rotation angle (0 = closed, PI/2 = open)
-let isLidOpen = false; // Track if lid is open or closed
-let lidAnimationSpeed = 0.08; // How fast the lid rotates (lower = smoother)
+// ====== HOVER INTERACTION STATE ======
+let isHoveringLid = false;    // True when mouse cursor is over the lid area
 
-// Camera view state
-let isTopDownView = false; // Track if in top-down view
-let currentViewCamX = 0, currentViewCamY = -115, currentViewCamZ = -200; // Current interpolated camera position
-let targetViewCamX = 0, targetViewCamY = -115, targetViewCamZ = -200; // Target camera position for view transitions
-let cameraTransitionSpeed = 0.05; // How fast the camera transitions between views
+// ====== LID ANIMATION STATE ======
+// The lid uses smooth interpolation (lerp) between current and target rotation
+let lidRotation = 0;          // Current rotation angle in radians (0 = closed)
+let targetLidRotation = 0;    // Target rotation angle (0 = closed, -PI/2.2 = open ~82 degrees)
+let isLidOpen = false;        // Boolean flag - once true, lid cannot be closed again
+let lidAnimationSpeed = 0.08; // Lerp factor: 0.08 means move 8% toward target each frame. Lower values = slower, smoother animation. Higher values = faster, snappier animation
 
-// Timeout for dialog display and automatic sketch swap
-const DIALOG_DISPLAY_DELAY = 4000; // 4 seconds delay before showing dialog (time to view empty container)
-const SKETCH_SWAP_TIMEOUT = 8000; // 8 seconds in milliseconds
-let dialogDisplayTimeoutId = null; // Store timeout ID for dialog display
-let swapTimeoutId = null; // Store timeout ID to clear if needed
+// ====== CAMERA VIEW STATE ======
+// Camera smoothly transitions between perspective view and top-down view
+let isTopDownView = false;    // Toggle between perspective (false) and top-down (true) views
 
+// Current camera position
+let currentViewCamX = 0;      // Horizontal offset from center
+let currentViewCamY = -115;   // Vertical position: -115 places camera above the model
+let currentViewCamZ = -200;   // Depth position: -200 places camera in front of model
+
+// Target camera position (where camera is moving toward)
+let targetViewCamX = 0;
+let targetViewCamY = -115;    // -115 provides a good viewing angle looking slightly down
+let targetViewCamZ = -200;    // -200 gives adequate distance to see the full container
+
+let cameraTransitionSpeed = 0.05;  // Lerp factor for camera movement
+                                   // 0.05 = 5% movement per frame for smooth transitions
+
+// ====== DIALOG AND SKETCH TRANSITION TIMING ======
+// These constants control the pacing of the narrative experience
+const DIALOG_DISPLAY_DELAY = 4000;  // 4000ms = 4 seconds. Delay after lid opens before showing error dialog. Gives user time to observe the empty container
+
+const SKETCH_SWAP_TIMEOUT = 8000;   // 8000ms = 8 seconds. Time dialog displays before auto-transitioning to BSOD sketch. Allows user to read the error message
+
+let dialogDisplayTimeoutId = null;  // Stores timeout ID so we can cancel if needed
+let swapTimeoutId = null;           // Stores timeout ID for sketch transition
+
+// ============================================================================
+// PRELOAD FUNCTION - Loads assets before setup() runs
+// ============================================================================
+// p5.js calls preload() before setup(). All loadImage() and loadModel() calls
+// here will complete before setup() begins, ensuring assets are ready.
 function preload() {
-  loadingStartTime = millis();
+  loadingStartTime = millis();  // Record when loading started for timing calculations
   
-  // Load texture - using the color/diffuse map
+  // Load the texture map for the container, has the surface detail and label design 
   containerTexture = loadImage('assets/textures/food-container-040-col-metalness-4k.png',
     () => {
       console.log('Texture loaded successfully');
@@ -41,17 +71,18 @@ function preload() {
     }
   );
   
-  // Load models with success/error callbacks
+  // Load the 3D OBJ model for the container base (bottom portion)
   containerBase = loadModel('assets/container-base.obj', 
     () => {
       console.log('Container base loaded');
-     
     },
     (error) => {
       console.error('Failed to load container base:', error);
     }
   );
   
+  // Load the 3D OBJ model for the container lid (top portion)
+  // Separate from base so it can be animated independently
   containerLid = loadModel('assets/container-lid.obj',
     () => {
       console.log('Container lid loaded');
@@ -62,31 +93,47 @@ function preload() {
   );
 }
 
+// ============================================================================
+// SETUP FUNCTION - Initialises the canvas and starts loading check
+// ============================================================================
 function setup() {
+  // Create a full-window WebGL canvas for 3D rendering
+  // WEBGL mode enables 3D graphics, lighting, textures, and camera control
   createCanvas(windowWidth, windowHeight, WEBGL);
   
-  // Check if models are loaded and hide loading screen
+  // Begin checking if all assets are loaded
   checkLoadingComplete();
 }
 
-// Function to hide loading screen
+// ============================================================================
+// LOADING SCREEN MANAGEMENT
+// ============================================================================
+
+/**
+ * Hides the HTML loading screen with a fade transition
+ * The loading screen is defined in index.html and provides context while assets load
+ */
 function hideLoadingScreen() {
   let loadingScreen = document.getElementById('loadingScreen');
   if (loadingScreen) {
-    loadingScreen.classList.add('hidden');
-    // Remove from DOM after transition
+    loadingScreen.classList.add('hidden');  // Triggers CSS fade-out transition
+    // Remove from DOM after 500ms transition completes to clean up
     setTimeout(() => {
       loadingScreen.style.display = 'none';
-    }, 500);
+    }, 500);  // 500ms matches the CSS transition duration
   }
 }
 
-// Check if loading is complete and enough time has passed
+/**
+ * Recursively checks if loading is complete
+ * Waits for: 1) All 3D models loaded, AND 2) Minimum display time elapsed
+ */
 function checkLoadingComplete() {
   let elapsed = millis() - loadingStartTime;
   
-  // Wait for both: models loaded AND minimum display time
+  // Check if all three assets are loaded (truthy check)
   if (containerBase && containerLid && containerTexture) {
+    // Calculate how much longer we need to wait to meet minimum time
     let remainingTime = Math.max(0, minLoadingTime - elapsed);
     
     setTimeout(() => {
@@ -95,166 +142,205 @@ function checkLoadingComplete() {
       console.log('Loading complete, hiding loading screen');
     }, remainingTime);
   } else {
-    // Check again in 100ms if models aren't ready
-    setTimeout(checkLoadingComplete, 100);
+    // Models not ready yet - check again in 100ms
+    // This creates a polling loop until assets are loaded
+    setTimeout(checkLoadingComplete, 100);  // 100ms = 10 checks per second
   }
 }
 
+// ============================================================================
+// DRAW FUNCTION - Main render loop 
+// ============================================================================
 function draw() {
-  background(235,240,255); // Light background to contrast with container
+  // Light blue-gray background provides clean contrast with the container
+  background(235, 240, 255);
   
-  // Update target camera position based on view mode
+  // ====== CAMERA POSITION CALCULATION ======
+  // Update target camera position based on current view mode
   if (isTopDownView) {
-    // Top-down view: camera directly above looking down
-    targetViewCamX = 0;
-    targetViewCamY = -100; // Position camera high above the model
-    targetViewCamZ = 0; // Centered on Z-axis for perfect top-down view
+    // Top-down view: camera positioned directly above, looking straight down
+    // This view is activated on first click and allows user to "look into" container
+    targetViewCamX = 0;      // Centered horizontally
+    targetViewCamY = -100;   // -100 units above origin (negative Y is up in p5 WEBGL)
+    targetViewCamZ = 0;      // Centered on Z-axis for perfect overhead view
   } else {
-    // Normal view with parallax
-    let parallaxStrength = 15; // Adjust this for more/less parallax
+    // Normal perspective view with mouse-controlled parallax effect
+    // Parallax creates subtle 3D depth as user moves mouse
+    let parallaxStrength = 15;  // Maximum offset in pixels (adjustable for effect intensity)
+    
+    // Map mouse position to parallax offset
+    // mouseX at 0 -> -15, mouseX at width -> +15
     let offsetX = map(mouseX, 0, width, -parallaxStrength, parallaxStrength);
     let offsetY = map(mouseY, 0, height, -parallaxStrength, parallaxStrength);
     
-    targetViewCamX = offsetX;
-    targetViewCamY = -115 + (offsetY * 5); // Base Y position with increased parallax effect
-    targetViewCamZ = -200 + offsetY; // Base Z position with parallax
+    targetViewCamX = offsetX;                  // Horizontal shift based on mouse X
+    targetViewCamY = -115 + (offsetY * 5);     // Vertical shift with 5x multiplier for more dramatic effect
+    targetViewCamZ = -200 + offsetY;           // Depth shift creates subtle zoom effect
   }
   
-  // Smoothly interpolate current camera position to target
+  // ====== SMOOTH CAMERA INTERPOLATION ======
+  // Use lerp (linear interpolation) to smoothly transition camera to target position, prevents jarring movements
   currentViewCamX = lerp(currentViewCamX, targetViewCamX, cameraTransitionSpeed);
   currentViewCamY = lerp(currentViewCamY, targetViewCamY, cameraTransitionSpeed);
   currentViewCamZ = lerp(currentViewCamZ, targetViewCamZ, cameraTransitionSpeed);
   
-  // Set camera position
+  // Apply camera transformation
+  // camera(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ)
+  // Eye position is where camera is located
+  // Center is the point the camera looks at (origin 0,0,0)
+  // Up defines a slight camera tilt for visual interest
   camera(currentViewCamX, currentViewCamY, currentViewCamZ, 0, 0, 0, 0, 20, 0);
 
-  // Add extra point lights
-  //pointLight method signature: pointLight(v1, v2, v3, x, y, z)
+  // ====== LIGHTING SETUP ======
+  // Main key light - white point light positioned upper-right-front
+  // Position (200, -200, 200) creates dramatic shadows and highlights
   pointLight(255, 255, 255, 200, -200, 200);
   
-  // Add ambient light for better material lighting, can appear bit dark without 
+  // Ambient light fills in shadows to prevent pure black areas
+  // RGB(120, 120, 120) = neutral gray, 47% brightness
   ambientLight(120, 120, 120);
   
-  // If lid is open, add interior lighting to illuminate the empty container
+  // ====== INTERIOR LIGHTING (only when lid is open) ======
+  // When lid opens, reveal the emptiness with dramatic interior lighting
+  // Without this, it was hard to make out the inside surfaces against dark shadows
   if (isLidOpen) {
-    // Multiple point lights positioned to illuminate interior surfaces
-    pointLight(255, 255, 240, 0, 30, 50);   // Warm white light from center-top inside
-    pointLight(220, 220, 255, 0, 60, 30);   // Cool fill light from mid-height, slightly back
-    pointLight(255, 250, 230, -50, 40, 50); // Soft light from left side
-    pointLight(255, 250, 230, 50, 40, 50);  // Soft light from right side
-    pointLight(240, 240, 255, 0, 70, 80);   // Light from front interior wall
-    // Add directional light pointing down into the container
-    directionalLight(200, 200, 210, 0, 1, 0); // Soft downward light
-    // Increase ambient light when lid is open for better overall interior visibility
+    // Multiple point lights positioned to illuminate all interior surfaces
+    pointLight(255, 255, 240, 0, 30, 50);   // Center-top: main interior illumination
+    pointLight(220, 220, 255, 0, 60, 30);   // Mid-height, slightly back
+    
+    // Side lights for even coverage
+    pointLight(255, 250, 230, -50, 40, 50); // Left side
+    pointLight(255, 250, 230, 50, 40, 50);  // Right side (symmetric)
+    pointLight(240, 240, 255, 0, 70, 80);   // Front interior wall light
+    
+    // Directional light pointing straight down into container
+    directionalLight(200, 200, 210, 0, 1, 0);
+    
+    // Additional ambient light when lid is open, slightly blue-tinted for cold, empty feeling
     ambientLight(80, 80, 85);
   }
   
-  noStroke();
-translate(0, 0, 50);
+  // ====== 3D MODEL RENDERING ======
+  noStroke();  // No wireframe outlines on 3D models
+  translate(0, 0, 50);  // Move entire scene 50 units toward camera for better framing, I couldn't seem to move the model itself which would have made more sense! 
   
-  // The Base
-  push();
-  translate(0, 0, 0); // Move base to origin
-  texture(containerTexture);
-  shininess(80); // Increased shininess for more depth
-  specularMaterial(180); // Add specular highlights to create dimension
-  model(containerBase);
-  pop();
+  // ====== CONTAINER BASE RENDERING ======
+  push();  // Save transformation state
+  translate(0, 0, 0);  // Base positioned at origin
+  texture(containerTexture);  // Apply the diffuse texture
+  shininess(80);  // shininess of 80 gives a semi-glossy plastic appearance
+  specularMaterial(180);  // 180 = moderately reflective surface
+  model(containerBase);  // Render the 3D model
+  pop();  // Restore transformation state
   
-  // Add a subtle interior floor plane when lid is open to help visualize emptiness
-  if (isLidOpen) {
-    push();
-    translate(0, 50, 50); // Position at bottom of container interior
-    rotateX(HALF_PI); // Rotate to be horizontal
-    fill(240, 240, 245); // Very light blue-gray color
-    ambientMaterial(255, 255, 255); // Make it reflect ambient light well
-    plane(130, 90); // Adjust size to fit container interior
-    pop();
-  }
+  // ====== CONTAINER LID RENDERING ======
+  push(); // Save lid transformation state
+  translate(0, 0, 0);  // Lid starts at origin (same as base - they share hinge point)
   
-  //The Lid
-  push();
-  translate(0, 0, 0); // Move lid to the right to align with base
-  
-  // Animate lid rotation smoothly
-  // Lerp (linear interpolation) between current and target rotation
+  // Animate lid rotation using smooth interpolation
+  // lerp(current, target, amount) moves current 8% toward target each frame
   lidRotation = lerp(lidRotation, targetLidRotation, lidAnimationSpeed);
   
-  // Apply rotation around the hinge point
-  rotateX(lidRotation); // Rotate around X-axis (opens upward)
+  // Apply rotation around X-axis (the "hinge" of the lid)
+  // Positive X rotation would tilt toward camera, negative tilts away (opens up)
+  rotateX(lidRotation);
   
-  // Check if mouse is hovering over lid
+  // Update hover detection for cursor feedback
   checkLidHover();
   
-  // Apply whitening effect based on hover state
+  // Visual feedback when hovering: brighten the lid slightly
   if (isHoveringLid) {
-    ambientLight(40, 40, 40); // Extra ambient light for overall brightening
+    ambientLight(40, 40, 40);  // Additional ambient light brightens hovered object
   }
   
-  // Flip the texture horizontally for the lid to fix backwards text
+  // Flip texture horizontally to correct label orientation
+  // The 3D model's UV mapping results in backwards text without this
   push();
-  scale(-1, 1, 1); // Flip horizontally so text isn't backwards on the label
-  texture(containerTexture); // Apply the imported texture. 
-  shininess(50); // More shiny than the base
-  specularMaterial(120); // Brighter highlights
-  //render the model
-  model(containerLid);
-  pop();
-  pop();
+  scale(-1, 1, 1);  // Mirror on X-axis (horizontal flip)
+  texture(containerTexture); 
+  shininess(50);         // Less shiny than base (50 vs 80) for subtle material variation
+  specularMaterial(120); // Lower specular (120 vs 180) - slightly more matte finish
+  model(containerLid);   // Render the lid 3D model
+  pop();  // Restore texture flip
+  pop();  // Restore lid transformation
 }
 
-// Check if mouse is hovering over the lid model
+// ============================================================================
+// HOVER DETECTION - Determines if mouse is over the lid
+// ============================================================================
+/**
+ * Uses distance-based detection to approximate if mouse is hovering over lid
+ * This is simpler than ray-casting and works well for single-object interaction
+ */
 function checkLidHover() {
-  // Get the screen position of the lid center
-  // The lid is positioned at (0, 0, 0) in 3D space
+  // Convert the lid's 3D position (0,0,0) to 2D screen coordinates
   let lidCenter = screenPosition(0, 0, 0);
   
-  // Define approximate hover area (you can adjust these values)
-  // Based on the lid's size on screen
-  let hoverRadius = 200; // Adjust this to match the lid's size
+  // Define circular hover area around lid center
+  // 200 pixels approximates the lid's visual size
+  let hoverRadius = 200;
   
   // Calculate distance from mouse to lid center
   let d = dist(mouseX, mouseY, lidCenter.x, lidCenter.y);
   
-  // Set hover state based on distance
+  // Mouse is "hovering" if within the radius
   isHoveringLid = (d < hoverRadius);
   
-  // Update cursor based on hover state and view mode
+  // Update cursor to provide visual feedback about interaction possibilities
   if (isHoveringLid) {
     if (isTopDownView) {
-      // Top-down view: show arrow cursor indicating 'opening' action
-      cursor('n-resize'); // Upward arrow indicates opening
+      // In top-down view: n-resize cursor (upward arrow) hints at "open" action
+      cursor('n-resize');
     } else {
-      // Not top-down view: show pointer cursor
+      // In perspective view: pointer indicates clickable element
       cursor('pointer');
     }
   } else {
-    // Not hovering: default cursor
+    // Default cursor when not hovering
     cursor('default');
   }
 }
 
-// Helper function to convert 3D position to screen coordinates
+// ============================================================================
+// 3D TO 2D COORDINATE CONVERSION
+// ============================================================================
+/**
+ * Converts a 3D world position to 2D screen coordinates
+ * Used for hover detection - maps lid position to where it appears on screen
+ * 
+ * @param {number} x - X position in 3D world space
+ * @param {number} y - Y position in 3D world space  
+ * @param {number} z - Z position in 3D world space
+ * @returns {p5.Vector} - 2D screen position (x, y)
+ */
 function screenPosition(x, y, z) {
+  // Access p5's internal camera object for matrix calculations
   let cam = _renderer._curCamera;
   let p = createVector(x, y, z);
   
-  // Get model view projection matrix
+  // Combine projection and view matrices into Model-View-Projection matrix
+  // This transforms 3D coordinates through the full rendering pipeline
   let mvp = cam.projMatrix.copy();
   mvp.apply(cam.cameraMatrix.copy());
   
-  // Transform point
+  // Define viewport boundaries (full canvas)
   let viewport = [0, 0, width, height];
+  
+  // Transform 3D point to clip space (homogeneous coordinates)
+  // The 4th component (w=1) enables perspective transformation
   let clip = multMatrixVector(mvp, [p.x, p.y, p.z, 1]);
   
-  // Perspective divide
+  // Perspective divide: convert from homogeneous to Cartesian coordinates
+  // Dividing by w creates the perspective effect (distant objects smaller)
   if (clip[3] !== 0) {
     clip[0] /= clip[3];
     clip[1] /= clip[3];
     clip[2] /= clip[3];
   }
   
-  // Convert to screen coordinates
+  // Convert normalized device coordinates (-1 to 1) to screen pixels
+  // X: maps [-1, 1] to [0, width]
+  // Y: maps [-1, 1] to [height, 0] (inverted because screen Y increases downward)
   let screen = createVector(
     viewport[0] + (1 + clip[0]) * viewport[2] / 2,
     viewport[1] + (1 - clip[1]) * viewport[3] / 2
@@ -263,11 +349,20 @@ function screenPosition(x, y, z) {
   return screen;
 }
 
-// Helper function to multiply matrix by vector
+/**
+ * Matrix-vector multiplication for 4x4 transformation matrices
+ * Used in the 3D-to-2D coordinate conversion pipeline
+ * 
+ * @param {p5.Matrix} mat - 4x4 transformation matrix
+ * @param {number[]} vec - 4-component vector [x, y, z, w]
+ * @returns {number[]} - Transformed 4-component vector
+ */
 function multMatrixVector(mat, vec) {
   let result = [0, 0, 0, 0];
-  let m = mat.mat4;
+  let m = mat.mat4;  // Access raw matrix data (column-major order)
   
+  // Standard 4x4 matrix-vector multiplication
+  // Matrix indices: 0-3 = column 1, 4-7 = column 2, 8-11 = column 3, 12-15 = column 4
   result[0] = m[0] * vec[0] + m[4] * vec[1] + m[8] * vec[2] + m[12] * vec[3];
   result[1] = m[1] * vec[0] + m[5] * vec[1] + m[9] * vec[2] + m[13] * vec[3];
   result[2] = m[2] * vec[0] + m[6] * vec[1] + m[10] * vec[2] + m[14] * vec[3];
@@ -276,109 +371,166 @@ function multMatrixVector(mat, vec) {
   return result;
 }
 
-// Handle window resizing
+// ============================================================================
+// EVENT HANDLERS
+// ============================================================================
+
+/**
+ * Handles window resize events
+ * Ensures canvas always fills the browser window
+ */
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-// Handle mouse clicks to toggle lid open/closed
+/**
+ * Handles mouse click interactions
+ * Implements a two-stage interaction:
+ *   1. First click: Transition to top-down view
+ *   2. Second click (on lid): Open the lid and trigger dialog
+ */
 function mousePressed() {
-  // Don't handle clicks if the dialog is visible
+  // Ignore clicks when the Windows error dialog is visible
+  // This prevents interaction during the transition to sketch-2
   let dialog = document.getElementById('windowsDialog');
   if (dialog && dialog.classList.contains('visible')) {
-    return; // Ignore clicks when dialog is showing
+    return;
   }
   
-  // First click: Zoom to top-down view
+  // STAGE 1: First click transitions to top-down view
+  // This zooms in and positions camera to look into the container
   if (!isTopDownView) {
     isTopDownView = true;
   }
-  // When in top-down view: Open the lid (only if hovering over lid and lid is not already open)
+  // STAGE 2: When in top-down view, clicking the lid opens it
+  // Conditions: must be in top-down view, hovering lid, and lid not already open
   else if (isTopDownView && isHoveringLid && !isLidOpen) {
-    // Open the lid (cannot be closed once opened)
-    isLidOpen = true;
-    targetLidRotation = -PI / 2.2; // Open 90 degrees (negative rotates upward)
-    showWindowsDialog(); // Show the dialog when lid opens
+    isLidOpen = true;  // Permanently mark lid as open (cannot close)
+    
+    // Set target rotation for lid animation
+    // -PI/2.2 ≈ -1.43 radians ≈ -82 degrees (slightly less than 90°)
+    // Using 2.2 instead of 2 opens the lid to a natural-looking angle
+    // Negative value rotates the lid upward/backward
+    targetLidRotation = -PI / 2.2;
+    
+    // Trigger the Windows error dialog sequence
+    showWindowsDialog();
   }
 }
 
-// Function to show the Windows dialog
+// ============================================================================
+// WINDOWS DIALOG FUNCTIONS
+// ============================================================================
+
+/**
+ * Shows the Windows-style error dialog with glitch effects
+ * This dialog appears after the lid opens, revealing the empty container
+ * After a timeout, automatically transitions to sketch-2.js (BSOD)
+ */
 function showWindowsDialog() {
   let dialog = document.getElementById('windowsDialog');
   if (dialog) {
-    // Trigger glitch animation on the body when lid opens (with 1 second delay)
+    // Initial glitch effect on the page background
+    // 1200ms delay gives moment to register the empty container
     setTimeout(() => {
       document.body.classList.add('glitching');
       
-      // Remove glitch class after animation completes (0.2s * 2 iterations = 0.4s)
+      // Remove glitch after animation (500ms duration)
       setTimeout(() => {
         document.body.classList.remove('glitching');
-      }, 500);
-    }, 1200);
+      }, 500);  // 500ms = half second glitch duration
+    }, 1200);   // 1200ms = 1.2 second delay before first glitch
     
-    // Delay showing the dialog to give users time to see the empty container
+    // Show the dialog after delay (allows viewing empty container)
     console.log(`Waiting ${DIALOG_DISPLAY_DELAY / 1000} seconds before showing dialog`);
     dialogDisplayTimeoutId = setTimeout(() => {
-      dialog.classList.add('visible');
+      dialog.classList.add('visible');  // CSS class triggers fade-in
       
-      // Trigger glitch animation on the dialog when it becomes visible
+      // Glitch effect when dialog appears
       dialog.classList.add('glitching');
       setTimeout(() => {
         dialog.classList.remove('glitching');
-      }, 400);
+      }, 400);  // 400ms glitch duration for dialog
       
-      // Set up repeating glitch effect on the dialog
+      // Start ongoing glitch effects for unsettling atmosphere
       startRepeatingGlitch(dialog);
       
-      // Start timeout to automatically swap sketches after dialog is shown
+      // After dialog displays, transition to BSOD sketch
       console.log(`Starting ${SKETCH_SWAP_TIMEOUT / 1000} second timeout before sketch swap`);
       swapTimeoutId = setTimeout(() => {
-        triggerSketchSwap();
+        triggerSketchSwap();  // Defined in index.html - loads sketch-2.js
       }, SKETCH_SWAP_TIMEOUT);
     }, DIALOG_DISPLAY_DELAY);
   }
 }
 
-// Interval ID for repeating glitch effect
+// ============================================================================
+// GLITCH EFFECT SYSTEM
+// ============================================================================
+
+// Stores timeout ID for cancellation when dialog is hidden
 let glitchIntervalId = null;
 
-// Function to create repeating glitch effect
+/**
+ * Creates ongoing random glitch effects on an element
+ * Glitches occur at random intervals (1.5-3 seconds) for unpredictable feel
+ * 
+ * @param {HTMLElement} element - DOM element to apply glitch effect to
+ */
 function startRepeatingGlitch(element) {
-  // Glitch every 1.5-3 seconds randomly
+  //internal function to schedule the next glitch
+
   function scheduleNextGlitch() {
-    let delay = random(1500, 3000); // Random delay between glitches
+    // Random delay between 1500-3000ms for unpredictable timing
+    let delay = random(1500, 3000);
+    
     glitchIntervalId = setTimeout(() => {
+      // Only glitch if element is still visible
       if (element.classList.contains('visible')) {
         element.classList.add('glitching');
+        
+        // Remove glitch class after 400ms
         setTimeout(() => {
           element.classList.remove('glitching');
         }, 400);
-        scheduleNextGlitch(); // Schedule next glitch
+        
+        // Schedule next glitch recursively
+        scheduleNextGlitch();
       }
     }, delay);
   }
-  scheduleNextGlitch();
+  //initial call to start the cycle
+  scheduleNextGlitch();  // Start the cycle
 }
 
-// Function to hide the Windows dialog
+/**
+ * Hides the Windows dialog and cleans up all timers
+ * Called if user interaction interrupts the automatic flow
+ */
 function hideWindowsDialog() {
+  //get the dialog element by id selector
   let dialog = document.getElementById('windowsDialog');
+  //check if dialog exists
   if (dialog) {
+    //remove visibility 
     dialog.classList.remove('visible');
+    //important so we stop any glitching when dialog is hidden 
     dialog.classList.remove('glitching');
     
-    // Clear the repeating glitch effect
+    // Clean up repeating glitch timer
     if (glitchIntervalId) {
       clearTimeout(glitchIntervalId);
       glitchIntervalId = null;
     }
     
-    // Clear both timeouts if dialog is hidden before they complete
+    // Clean up dialog display timer
     if (dialogDisplayTimeoutId) {
       clearTimeout(dialogDisplayTimeoutId);
       dialogDisplayTimeoutId = null;
       console.log('Dialog display timeout cleared');
     }
+    
+    // Clean up sketch swap timer
     if (swapTimeoutId) {
       clearTimeout(swapTimeoutId);
       swapTimeoutId = null;
@@ -387,9 +539,3 @@ function hideWindowsDialog() {
   }
 }
 
-// Handle keyboard input for camera view toggle
-function keyPressed() {
-  if (key === 't' || key === 'T') {
-    isTopDownView = !isTopDownView;
-  }
-}

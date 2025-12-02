@@ -1,10 +1,12 @@
 
 
+/* Remove default browser margins/padding for edge to edge canvas */
 html, body {
   margin: 0;
   padding: 0;
 }
 
+/* Prevent inline spacing issues - canvas defaults to inline which adds whitespace */
 canvas {
   display: block;
 }
@@ -22,19 +24,20 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
-  transition: opacity 0.5s ease-out;
+  z-index: 2000; /* High z-index ensures loading screen appears above everything, including p5 canvas while thats loading */
+  transition: opacity 0.5s ease-out; /* Smooth fade-out when loading completes */
 }
 
+/* When hidden class is added via JS, fade out and disable mouse interaction */
 .loading-overlay.hidden {
   opacity: 0;
-  pointer-events: none;
+  pointer-events: none; /* Allows clicks to pass through to content behind */
 }
 
 .loading-container {
-  width: 600px;
-  max-width: 90%;
-  font-family: 'Consolas', 'Courier New', monospace;
+  width: 600px; /* Fixed width keeps text centered and cosy */
+  max-width: 90%; /* Responsive fallback for smaller screens */
+  font-family: 'Consolas', 'Courier New', monospace; /* Monospace for terminal style text */
 }
 
 .loading-header {
@@ -71,6 +74,11 @@ canvas {
   animation: fadeInLine 0.3s ease-out forwards;
 }
 
+/* 
+ * Staggered animation delays create typewriter-like effect
+ * Each line appears 0.5s after the previous one (0.3s base + 0.5s increments)
+ * Total sequence takes ~3.6s before all lines are visible
+ */
 .boot-line.delay-1 { animation-delay: 0.3s; }
 .boot-line.delay-2 { animation-delay: 0.8s; }
 .boot-line.delay-3 { animation-delay: 1.3s; }
@@ -79,21 +87,24 @@ canvas {
 .boot-line.delay-6 { animation-delay: 2.8s; }
 .boot-line.delay-7 { animation-delay: 3.3s; }
 
+/* Slide-in effect: lines appear to type in from the left */
 @keyframes fadeInLine {
   0% { 
     opacity: 0; 
-    transform: translateX(-10px);
+    transform: translateX(-10px); /* Start slightly left */
   }
   100% { 
     opacity: 1; 
-    transform: translateX(0);
+    transform: translateX(0); /* End at normal position */
   }
 }
 
+/* adds blinking animation to spans with this class */
 .loading-dots {
   animation: blink 1s infinite;
 }
 
+/* Blink keyframes: visible 50% of the time, invisible 50% */
 @keyframes blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0; }
@@ -107,10 +118,11 @@ canvas {
 .status-critical {
   color: #ff4444;
   font-weight: bold;
-  animation: pulse-red 1.5s infinite;
+  animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse-red {
+/* Pulse animation, similar to blink, but doesn't go fully invisible */
+@keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
@@ -131,10 +143,13 @@ canvas {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, #8b8b8b, #8b8b8b);
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-  animation: loadingProgress 4s ease-out forwards;
+  animation: loadingProgress 4s ease-out forwards; /* 4s duration simulates loading time */
 }
 
+/* 
+ * Loading bar animation with non-linear easing 
+ * Simulates real loading behavior: fast start, slower middle, finish at end
+ */
 @keyframes loadingProgress {
   0% { width: 0%; }
   20% { width: 25%; }
@@ -153,18 +168,19 @@ canvas {
 
 /* ==========================================
    WINDOWS DIALOG STYLING
+   Mimics a modern OS dialog appearance
    ========================================== */
 .dialog-overlay {
-  position: fixed;
+  position: fixed; /* Gives us absolute positioning relative to viewport and fixed in case of scrolling */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  display: none; /* Hidden by default */
+  background: rgba(0, 0, 0, 0.3); /* Semi-transparent backdrop */
+  display: none; /* Hidden by default, toggled via JS */
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1000; /* Below loading screen (2000) but above canvas */
 }
 
 .dialog-overlay.visible {
@@ -176,10 +192,11 @@ canvas {
   background: #fafafa;
   width: 420px;
   border: none;
-  border-radius: 12px;
+  border-radius: 12px; /* Modern rounded corners */
+  /* Layered shadows: primary shadow for depth, secondary for subtle lift */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Windows system font */
+  overflow: hidden; /* Clips children to rounded corners */
 }
 
 .dialog-titlebar {
@@ -261,12 +278,17 @@ canvas {
   animation: stuckProgress 3s ease-in-out forwards;
 }
 
+/* 
+ * "Stuck" progress bar animation - deliberately gets stuck at 38%
+ * Creates the classic "frozen update" OS experience
+ * Stays at 38% from 50% through 100% of animation time
+ */
 @keyframes stuckProgress {
   0% { width: 0%; }
   30% { width: 35%; }
-  50% { width: 38%; }
-  70% { width: 38%; }
-  100% { width: 38%; }
+  50% { width: 38%; }  /* Reaches 38%... */
+  70% { width: 38%; }  /* ...and stays stuck... */
+  100% { width: 38%; } /* ...never finishing */
 }
 
 .progress-text {
@@ -297,29 +319,23 @@ canvas {
   transition: all 0.2s ease;
 }
 
-.restart-button:hover {
-  background: linear-gradient(135deg, #4a8fc4 0%, #6ea8d6 100%);
-  box-shadow: 0 4px 12px rgba(90, 159, 212, 0.5);
-  transform: translateY(-1px);
-}
 
-.restart-button:active {
-  background: linear-gradient(135deg, #3a7fb4 0%, #5e98c6 100%);
-  box-shadow: 0 1px 4px rgba(90, 159, 212, 0.3);
-  transform: translateY(0);
-}
 
-.restart-button:focus {
-  outline: 2px solid rgba(90, 159, 212, 0.5);
-  outline-offset: 2px;
-}
 
-/*Glitch Animations
-References:
-https://codepen.io/kaypooma/pen/OJJBGy
-https://codepen.io/cubeghost/pen/myWqvL
-https://codepen.io/ZonFire99/pen/EaYmGV
-*/
+/*
+ * GLITCH ANIMATIONS
+ * Creates VHS/digital corruption effects
+ * Remix References:
+ * https://codepen.io/kaypooma/pen/OJJBGy
+ * https://codepen.io/cubeghost/pen/myWqvL
+ * https://codepen.io/ZonFire99/pen/EaYmGV
+ */
+
+/* 
+ * Noise effect: random scale distortions at specific keyframes
+ * The odd percentages (3%, 4.3%, 42%, 43%, 44%) create unpredictable glitch timing
+ * scaleY(1.7) and scaleX(1.5) stretch the element to simulate corruption
+ */
 @-webkit-keyframes noise {
   0%, 3%, 5%, 42%, 44%, 100% {opacity: 1; -webkit-transform: scaleY(1); transform: scaleY(1);}  
   4.3% {opacity: 1; -webkit-transform: scaleY(1.7); transform: scaleY(1.7);}
@@ -332,6 +348,12 @@ https://codepen.io/ZonFire99/pen/EaYmGV
   43% {opacity: 1; -webkit-transform: scaleX(1.5); transform: scaleX(1.5);}
 }
 
+/* 
+ * Wiggle effect: rapid horizontal skewing
+ * The extreme skew values (24deg, -90deg, 55deg) create chaotic distortion
+ * Values decrease toward the end (3deg, -2deg, 1deg) for settling effect
+ * -webkit prefix needed for older Safari versions
+ */
 @-webkit-keyframes wiggle {
     0% { -webkit-transform: skewX(24deg); } 
     10% { -webkit-transform: skewX(-8deg); }
@@ -346,27 +368,47 @@ https://codepen.io/ZonFire99/pen/EaYmGV
     100% { -webkit-transform: skewX(0deg); }
 }
 
+@keyframes wiggle {
+    0% { transform: skewX(24deg); } 
+    10% { transform: skewX(-8deg); }
+    20% { transform: skewX(55deg); }
+    30% { transform: skewX(-90deg); }
+    40% { transform: skewX(29deg); }
+    50% { transform: skewX(-90deg); }
+    60% { transform: skewX(3deg); }
+    70% { transform: skewX(-2deg); }
+    80% { transform: skewX(1deg); }
+    90% { transform: skewX(10deg); }
+    100% { transform: skewX(0deg); }
+}
+
+/* 
+ * RGB split text shadow creates chromatic aberration effect
+ * Offsets: red (30px right, 13px down), green (-38px left, -4px up), blue (-2px, -4px)
+ * The asymmetric values make it feel organic/broken rather than perfectly offset
+ */
 .glitching {
-  -webkit-animation: wiggle 0.2s 2;
+  -webkit-animation: wiggle 0.2s 2; /* 0.2s = fast glitch, repeats twice */
   animation: wiggle 0.2s 2;
-  text-shadow:30px 13px rgba(246, 0, 153,0.8),
-             -38px -4px rgba(15, 210, 255,0.8),
-             -2px -4px rgba(255, 210, 0, 1);
+  text-shadow: 30px 13px rgba(255, 0, 0, 0.8),
+              -38px -4px rgba(0, 255, 0, 0.8),
+              -2px -4px rgba(0, 0, 255, 1);
 }
 
 /* Apply glitch effect to dialog window specifically */
 .dialog-overlay.glitching .dialog-window {
   -webkit-animation: noise 0.3s 2;
   animation: noise 0.3s 2;
+  /* red/blue offset shadows mimic RGB channel separation */
   box-shadow: 
     0 4px 20px rgba(0, 0, 0, 0.5),
-    5px 0 rgba(246, 0, 153, 0.5),
-    -5px 0 rgba(15, 210, 255, 0.5);
+    5px 0 rgba(255, 0, 0, 0.5),   /* red offset right */
+    -5px 0 rgba(0, 0, 255, 0.5); /* blue offset left */
 }
 
 /* Apply glitch to body/canvas when lid opens */
 body.glitching canvas {
   -webkit-animation: noise 0.2s 2;
   animation: noise 0.2s 2;
-  filter: contrast(1.1) saturate(1.2);
+  filter: contrast(1.1) saturate(1.2); /* Boost colors slightly for glitchy feel */
 }
