@@ -155,6 +155,9 @@ function draw() {
   // Light blue-gray background provides clean contrast with the container
   background(235, 240, 255);
   
+  // Reduce near clipping plane so the open lid doesn't get cut off when close to camera
+  perspective(PI/3, width/height, 10, 10000);
+  
   // ====== CAMERA POSITION CALCULATION ======
   // Update target camera position based on current view mode
   if (isTopDownView) {
@@ -222,7 +225,7 @@ function draw() {
   
   // ====== 3D MODEL RENDERING ======
   noStroke();  // No wireframe outlines on 3D models
-  translate(0, 0, 50);  // Move entire scene 50 units toward camera for better framing, I couldn't seem to move the model itself which would have made more sense! 
+  translate(0, 0, 35);  // Move entire scene 35 units toward camera for better center framing of the model, I couldn't seem to move the model itself which would have made more sense! 
   
   // ====== CONTAINER BASE RENDERING ======
   push();  // Save transformation state
