@@ -13,11 +13,9 @@ let displayText = "";   // Current message being typed out
 let charIndex = 0;      // Current character position in typewriter effect
 
 // ====== TYPEWRITER ANIMATION TIMING ======
-let typewriterSpeed = 2;    // Characters revealed per frame (higher = faster typing)
-                            // At 60fps, 2 chars/frame = 120 characters per second
-let pauseFrames = 300;      // Frames to pause after fully displaying a stat
-                            // 300 frames at 60fps = 5 seconds viewing time
-let pauseCounter = 280;     // Initial counter set high (280) to start first stat quickly
+let typewriterSpeed = 2;    // Characters revealed per frame (higher = faster typing). At 60fps, 2 chars/frame = 120 characters per second
+let pauseFrames = 480;      // Frames to pause after fully displaying a stat. 480 frames at 60fps = 8 seconds viewing time
+let pauseCounter = 460;     // Initial counter set high (460) to start first stat quickly
                             // Setting to 0 would mean 5-second wait before first stat
 
 // ====== AUDIO STATE ======
@@ -121,7 +119,8 @@ function draw() {
             textSize(14);
             textStyle(NORMAL);
             fill(200, 200, 255);  // Light blue - RGB(200, 200, 255)
-            text("Error Code: " + error.error_code, 40, yPos);
+            // Display error code with index prefix for clarity when cycling through 
+            text("Error Code: " + "0x0" + currentStat + " " + error.error_code, 40, yPos);
             
             yPos += 35;  // Extra spacing before message body
             
@@ -160,7 +159,7 @@ function draw() {
             textSize(14);
             textStyle(NORMAL);
             fill(200, 200, 255);
-            text("Error Code: " + error.error_code, 40, yPos);
+            text("Error Code: " + "0x0" + currentStat + " " + error.error_code, 40, yPos);
             
             yPos += 35;
             
@@ -169,20 +168,7 @@ function draw() {
             textStyle(NORMAL);
             fill(255);
             text(displayText, 40, yPos, width - 80);
-            
-            if (charIndex >= displayText.length) {
-                // Calculate height of displayed text to position "click to continue" below it
-                let messageLines = displayText.split('\n').length;
-                let approxLines = Math.ceil(textWidth(displayText) / (width - 80)) + messageLines;
-                let messageHeight = approxLines * 22;
-                
-                // Display "click to continue" prompt with blinking effect
-                let blinkAlpha = (sin(frameCount * 0.1) + 1) * 127.5; // oscillates 0-255
-                fill(200, 200, 255, blinkAlpha);
-                textSize(14);
-                textStyle(ITALIC);
-                text("Click to continue...", 40, yPos + messageHeight + 20);
-            }
+        
             // pause before cycling to next statistic
             pauseCounter++;
             if (pauseCounter > pauseFrames) {
@@ -198,16 +184,18 @@ function draw() {
         }
     }
     
-    // ====== FOOTER SECTION: SYSTEM PROGNOSIS ======
+    // ====== FOOTER SECTION: USER COMMANDS AND SYSTEM PROGNOSIS ======
     // Fixed position at bottom of screen with summary of agricultural outlook
     fill(255);
     textSize(14);
-    // Start footer 225px from bottom - ensures visibility on most screens
+
+    
+    // Start footer 175px from bottom - ensures visibility on most screens
     let footerY = height - 225;
     
     text("System Prognosis:", 40, footerY);
     footerY += 30;  // 30px spacing after header
-    
+
     // Display prognosis data if available
     if (farmData && farmData.system_prognosis) {
         let prognosis = farmData.system_prognosis;
@@ -227,6 +215,10 @@ function draw() {
         footerY += 25;
         
         text("*** TIME TO CRITICAL FAILURE: " + prognosis.time_to_critical_failure, 40, footerY);
+        footerY += 35;
+        
+        // User interaction hint
+        text("Press ENTER to continue...", 40, footerY);
     } else {
         // Fallback error messages if prognosis data missing
         text("*** STOP: 0x000000AG (FARM_DATA_OVERFLOW)", 40, footerY);
@@ -251,6 +243,31 @@ function windowResized() {
 }
 
 /**
+ * Handles key press events
+ * ENTER key advances to next statistic immediately
+ */
+function keyPressed() {
+    if (keyCode === ENTER) {
+        advanceToNextStat();
+    }
+}
+
+/**
+ * Advances to the next statistic, resetting animation state
+ */
+function advanceToNextStat() {
+    if (farmData && farmData.agricultural_system_errors) {
+        // Cycle to next statistic (loops back to 0 when reaching end)
+        currentStat = (currentStat + 1) % farmData.agricultural_system_errors.length;
+        
+        // Load new message and reset animation state
+        displayText = farmData.agricultural_system_errors[currentStat].message;
+        charIndex = 0;     // Reset typewriter to beginning
+        pauseCounter = 0;  // Reset pause timer
+    }
+}
+
+/**
  * Toggles audio on/off and updates button icon
  */
 function toggleSound() {
@@ -261,21 +278,5 @@ function toggleSound() {
     } else {
         failureSound.pause();   // Pause sound
         muteButton.html('🔇');  // Muted speaker emoji
-    }
-}
-
-/**
- * Handles mouse click to skip to next statistic
- * Only works when current stat is fully displayed (not during typewriter animation)
- * Allows impatient users to browse statistics faster
- */
-function mousePressed() {
-    // Only allow skipping if typewriter effect is complete
-    if (charIndex >= displayText.length) {
-        // Advance to next statistic (with wraparound)
-        currentStat = (currentStat + 1) % farmData.agricultural_system_errors.length;
-        displayText = farmData.agricultural_system_errors[currentStat].message;
-        charIndex = 0;      // Reset typewriter
-        pauseCounter = 0;   // Reset pause timer
     }
 }
